@@ -10,6 +10,8 @@ body {
 header,
 main,
 footer {
+
+  width: 100%;
   max-width: 1100px;
   margin: 0 auto;
   padding-left: 24px;
@@ -41,6 +43,7 @@ footer {
 
 nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 24px;
   margin-top: 24px;
 }
@@ -80,13 +83,15 @@ p {
   list-style-type: none;
   padding-left: 0;
   margin: 0;
-  display: flex;
-  align-items: stretch;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  
   gap: 24px;
 }
 
 .feature-card {
-  flex: 1;
+  min-width: 0;
   padding: 20px 24px;
   margin-bottom: 0px;
   border: 1px solid #deddea;
@@ -149,4 +154,60 @@ input:focus {
 
 button:active {
   transform: translateY(1px);
+}
+
+/* 웹페이지가 표시되는 가로 폭이 768px 이하일 때만 적용 */
+@media (max-width: 768px){
+  body{
+    font-size: 16px;
+  }
+
+  header{
+    padding-top: 32px;
+    padding-bottom: 24px;
+  }
+
+  section{
+    margin-top: 40px;
+  }
+
+  h1{
+    font-size: 36px;
+  }
+
+  h2{
+    font-size: 28px;
+  }
+
+  /* 가로 메뉴를 위에서 아래로 배치*/
+  nav{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  nav a{
+    /* 링크 글자 주변에도 누를 수 있는 여백 추가 */
+    padding: 8px 0;
+  }
+
+  /* 기능 카드를 한 열로 배치*/
+  .feature-list{
+    grid-template-columns: 1fr;
+  }
+
+  /* 이메일 입력창과 버튼도 한 열로 배치*/
+  form{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  input,
+  button{
+    width: 100%;
+  }
+
+  button{
+    min-height: 48px;
+  }
 }
