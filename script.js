@@ -112,6 +112,7 @@ tabs.forEach(function (tab) {
   tab.addEventListener("click", handleTabClick);
 });
 
+// 다단계 폼(Multi-step Flow) 로직
 const trainingFlow = document.querySelector("#training-flow");
 const flowSteps = trainingFlow.querySelectorAll(".step");
 const progressItems = trainingFlow.querySelectorAll(".progress_item");
@@ -238,3 +239,135 @@ restartButton.addEventListener("click", () => {
     summaryQna.textContent = "";
     showStep(0);
 });
+
+// ==========================================
+// [새로운 기능] 무작위 짝 배정 및 히스토리 관리 로직
+// ==========================================
+const participantInput = document.querySelector("#participant-input");
+const runMatchingBtn = document.querySelector("#run-matching-btn");
+const matchErrorMsg = document.querySelector("#match-error-msg");
+const matchResultContainer = document.querySelector("#match-result-container");
+const matchResultList = document.querySelector("#match-result-list");
+const saveMatchBtn = document.querySelector("#save-match-btn");
+const emptyHistoryMsg = document.querySelector("#empty-history-msg");
+const historyList = document.querySelector("#history-list");
+
+let currentPairs = [];
+let savedMatchHistory = [];
+
+function shuffleArray(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+}
+
+runMatchingBtn.addEventListener("click", () => {
+    const rawText = participantInput.value.trim();
+    if (!rawText) {
+        matchErrorMsg.textContent = "참여자 명단을 입력해 주세요. (예: 김철수, 이영희)";
+        participantInput.classList.add("has-error");
+        participantInput.focus();
+        matchResultContainer.hidden = true;
+        return;
+    }
+
+    matchErrorMsg.textContent = "";
+    participantInput.classList.remove("has-error");
+
+    let names = rawText.split(/[,,\s]+/).map(name => name.trim()).filter(name => name.length > 0);
+    
+    if (names.length < 2) {
+        matchErrorMsg.textContent = "최소 2명 이상의 참여자를 입력해야 짝을 배정할 수 있습니다.";
+        participantInput.focus();
+        matchResultContainer.hidden = true;
+        return;
+    }
+
+    shuffleArray(names);
+    currentPairs = [];
+
+    for (let i = 0; i < names.length; i += 2) {
+        if (i + 1 < names.length) {
+            currentPairs.push(`${names[i]} & ${names[i+1]}`);
+        } else {
+            currentPairs.push(`${names[i]} (혼자 남음)`);
+        }
+    }
+
+    matchResultList.innerHTML = "";
+    currentPairs.forEach((pair, index) => {
+        const li = document.createElement("li");
+        li.textContent = `조 ${index + 1}: ${pair}`;
+        matchResultList.appendChild(li);
+    });
+
+    matchResultContainer.hidden = false;
+});
+
+saveMatchBtn.addEventListener("click", () => {
+    if (currentPairs.length === 0) return;
+
+    const timestamp = new Date().toLocaleTimeString();
+    const historyItem = {
+        id: Date.now(),
+        title: `배정 결과 (${timestamp})`,
+        pairs: [...currentPairs]
+    };
+
+    savedMatchHistory.push(historyItem);
+    renderHistoryList();
+
+    matchResultContainer.hidden = true;
+    participantInput.value = "";
+    matchErrorMsg.textContent = "성공적으로 결과가 히스토리 목록에 저장되었습니다!";
+    matchErrorMsg.style.color = "#245c3a";
+});
+
+function renderHistoryList() {
+    if (savedMatchHistory.length === 0) {
+        emptyHistoryMsg.hidden = false;
+        historyList.innerHTML = "";
+        return;
+    }
+
+    emptyHistoryMsg.hidden = true;
+    historyList.innerHTML = "";
+
+    savedMatchHistory.forEach((item) => {
+        const li = document.createElement("li");
+        
+        const span = document.createElement("span");
+        span.textContent = `${item.title} (${item.pairs.length}개 조)`;
+        
+        const btnGroup = document.createElement("div");
+        btnGroup.style.display = "flex";
+        btnGroup.style.gap = "8px";
+
+        const viewBtn = document.createElement("button");
+        viewBtn.textContent = "다시 보기";
+        viewBtn.className = "history-item-btn";
+        viewBtn.addEventListener("click", () => {
+            alert(`[${item.title}]\n` + item.pairs.join("\n"));
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "삭제";
+        deleteBtn.className = "history-item-btn";
+        deleteBtn.style.backgroundColor = "#9d243d";
+        deleteBtn.addEventListener("click", () => {
+            savedMatchHistory = savedMatchHistory.filter(h => h.id !== item.id);
+            renderHistoryList();
+        });
+
+        btnGroup.appendChild(viewBtn);
+        btnGroup.appendChild(deleteBtn);
+
+        li.appendChild(span);
+        li.appendChild(btnGroup);
+        historyList.appendChild(li);
+    });
+}

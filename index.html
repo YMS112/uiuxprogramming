@@ -4,21 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Match</title>
+    <title>Random Match - 무작위 짝 배정 서비스</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href=style.css >
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!--
-    사용자: 모임, 수업, 팀 프로젝트에서 짝을 매칭하려는 사람
-    목적: 공정하고 빠르게 무작위 짝을 배정하기
-    핵심 행동: 명단 입력 및 짝 배정하기
-    정보 순서: 소개->기능->방법->소식 받기
-    -->
     <header>
         <h1>무작위 짝 배정 서비스</h1>
         <p>공정하고 빠른 무작위 추첨으로 누구나 쉽게 짝을 매칭합니다.</p>
@@ -27,6 +21,8 @@
             <a href="#about">서비스 소개</a>
             <a href="#features">주요 기능</a>
             <a href="#steps">이용 방법</a>
+            <a href="#match-settings">서비스 설정</a>
+            <a href="#match-history-section">짝 배정 및 관리</a>
             <a href="#subscribe">서비스 소식 받기</a>
         </nav>
     </header>
@@ -109,9 +105,8 @@
             </div>
         </section>
 
-
         <section id="steps">
-                <h2>이용 방법</h2>
+            <h2>이용 방법</h2>
             <ol>
                 <li>회원가입 및 로그인</li>
                 <li>참여할 사람들의 명단을 입력합니다.</li>
@@ -119,10 +114,9 @@
                 <li>무작위 배정 버튼을 눌러 결과를 확인합니다.</li>
                 <li>완성된 짝 매칭 결과를 저장하거나 공유합니다.</li>
             </ol>
-
         </section>
 
-        <section id="event-practice">
+        <section id="match-settings">
             <h2>서비스 설정</h2>
 
             <div class="event-grid">
@@ -166,7 +160,7 @@
         <section id="training-flow" class="training-flow" hidden>
             <h2>짝 배정 세부 설정</h2>
             <p class="progress" aria-label="설정 진행 단계">
-                <span class="progress_item">1 · 정보</span>
+                <span class="progress_item is-active">1 · 정보</span>
                 <span class="progress_item">2 · 조건</span>
                 <span class="progress_item">3 · 확인</span>
             </p>
@@ -212,13 +206,12 @@
 
             <section class="step complete-step" data-step="4" hidden>
                 <h3>짝 배정 설정이 완료되었습니다.</h3>
-                <p>설정한 내용을 확인했습니다. 명단 입력 후 배정을 시작할 수 있습니다.</p>
+                <p>설정한 내용을 확인했습니다. 아래에서 명단을 입력 후 배정을 시작할 수 있습니다.</p>
                 <button id="restart-button" type="button">다시 설정하기</button>
             </section>
-          </section>
+        </section>
 
-
-             <!-- [새로운 기능] 짝 배정 결과 히스토리 및 목록 관리 -->
+        <!-- [새로운 기능] 짝 배정 결과 히스토리 및 목록 관리 -->
         <section id="match-history-section" class="match-history-card">
             <h2>무작위 짝 배정 및 결과 관리</h2>
             <p>참여자 명단을 입력하여 실시간으로 짝을 배정하고, 결과를 저장하여 나중에 다시 확인할 수 있습니다.</p>
@@ -245,9 +238,8 @@
             </div>
         </section>
 
-
         <section id="subscribe" class="subscribe-card">
-                <h2>서비스 소식 받기</h2>
+            <h2>서비스 소식 받기</h2>
             <form id="subscribe-form">
                 <label for="email">이메일</label>
                 <input type="email" id="email" name="email">
@@ -257,21 +249,13 @@
             <p id="subscribeMessage" aria-live="polite">
                 이메일을 입력한 뒤 신청해주세요.
             </p>
-        
         </section>
-
-     
     </main>
 
     <footer>
-        <small>© 2026 짝 배정 서비스</small>
+        <small>© 2026 무작위 짝 배정 서비스 (Random Match)</small>
     </footer>
 
-    <script src="script.js"></script>       
-
-       
-
-        
-       
+    <script src="script.js"></script>         
 </body>
 </html>
