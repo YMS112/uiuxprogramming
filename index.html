@@ -139,24 +139,24 @@
                 </article>
 
                 <article class="event-card">
-                    <h3>녹음 활용 동의</h3>
+                    <h3>매칭 데이터 활용 동의</h3>
                     <label class="agree-row">
                         <input type="checkbox" id="agreeCheck">
-                        사용자 분석을 위한 녹음 활용에 동의합니다.
+                        공정한 추첨을 위한 데이터 처리에 동의합니다.
                     </label>
                     <p id="agreeMessage" aria-live="polite">
                         동의 후 서비스를 시작할 수 있습니다.
                     </p>
                     <button id="startButton" type="button" disabled>
-                        서비스 설정 시작하기
+                        배정 설정 시작하기
                     </button>
                 </article>
             </div>
         </section>
 
         <dialog id="recording-dialog" aria-labelledby="recording-title" aria-describedby="recording-description">
-            <h2 id="recording-title">녹음 활용 안내</h2>
-            <p id="recording-description">발표 훈련에 녹음 기능을 활용할 수 있습니다. 지금은 훈련 조건만 설정하며 녹음은 시작되지 않습니다.</p>
+            <h2 id="recording-title">배정 서비스 이용 안내</h2>
+            <p id="recording-description">무작위 짝 배정을 위한 세부 조건을 단계별로 설정합니다. 지금은 설정 단계이며 즉시 배정이 실행되지 않습니다.</p>
             <div class="dialog-actions">
                 <button id="recording-cancel" type="button">돌아가기</button>
                 <button id="recording-confirm" type="button">동의하고 설정 시작하기</button>
@@ -164,7 +164,7 @@
         </dialog>
 
         <section id="training-flow" class="training-flow" hidden>
-            <h2>발표 훈련 설정</h2>
+            <h2>짝 배정 세부 설정</h2>
             <p class="progress" aria-label="설정 진행 단계">
                 <span class="progress_item">1 · 정보</span>
                 <span class="progress_item">2 · 조건</span>
@@ -172,24 +172,24 @@
             </p>
 
             <section class="step" data-step="1" hidden>
-                <h3>발표 정보를 입력해 주세요.</h3>
-                <label for="presentation-title">발표 제목</label>
-                <input id="presentation-title" type="text" placeholder="예: 나의 발표 프로젝트 소개" aria-describedby="title-error">
+                <h3>모임 정보를 입력해 주세요.</h3>
+                <label for="presentation-title">모임 이름 / 프로젝트명</label>
+                <input id="presentation-title" type="text" placeholder="예: 2026 UIUX 팀 프로젝트 조 편성" aria-describedby="title-error">
                 <p id="title-error" class="error-message" aria-live="polite"></p>
-                <button id="title-next" type="button">훈련 조건 선택하기</button>
+                <button id="title-next" type="button">배정 조건 선택하기</button>
             </section>
 
             <section class="step" data-step="2" hidden>
-                <h3>훈련 조건을 선택해 주세요.</h3>
-                <label for="duration-range">발표 시간</label>
+                <h3>짝 배정 조건을 선택해 주세요.</h3>
+                <label for="duration-range">조별 인원수</label>
                 <input id="duration-range" type="range" min="0" max="2" step="1" value="1">
-                <output id="duration-value" for="duration-range">5분</output>
-                <label><input type="checkbox" id="qna-option">질의응답 포함</label>
+                <output id="duration-value" for="duration-range">4명 (기본)</output>
+                <label><input type="checkbox" id="qna-option">잔여 인원 몰아주기 허용</label>
                 <fieldset id="qna-options" hidden>
-                    <legend>질문 수</legend>
-                    <label><input type="radio" name="qna-count" value="1">1개</label>
-                    <label><input type="radio" name="qna-count" value="2" checked>2개</label>
-                    <label><input type="radio" name="qna-count" value="3">3개</label>
+                    <legend>최대 허용 초과 인원</legend>
+                    <label><input type="radio" name="qna-count" value="1">1명 추가</label>
+                    <label><input type="radio" name="qna-count" value="2" checked>2명 추가</label>
+                    <label><input type="radio" name="qna-count" value="3">3명 추가</label>
                 </fieldset>
                 <div class="step-actions">
                     <button id="option-prev" type="button">이전</button>
@@ -198,11 +198,11 @@
             </section>
 
             <section class="step" data-step="3" hidden>
-                <h3>입력한 내용을 확인해 주세요.</h3>
+                <h3>설정하신 내용을 확인해 주세요.</h3>
                 <div class="summary-list">
-                    <div><span>발표 제목</span><strong id="summary-title"></strong></div>
-                    <div><span>발표 시간</span><strong id="summary-duration"></strong></div>
-                    <div><span>질의 응답</span><strong id="summary-qna"></strong></div>
+                    <div><span>모임 이름</span><strong id="summary-title"></strong></div>
+                    <div><span>조별 인원</span><strong id="summary-duration"></strong></div>
+                    <div><span>잔여 인원 옵션</span><strong id="summary-qna"></strong></div>
                 </div>
                 <div class="step-actions">
                     <button id="summary-prev" type="button">수정하기</button>
@@ -211,11 +211,39 @@
             </section>
 
             <section class="step complete-step" data-step="4" hidden>
-                <h3>훈련 설정이 완료되었습니다.</h3>
-                <p>설정한 내용을 확인했습니다. 필요하면 다시 설정할 수 있습니다.</p>
+                <h3>짝 배정 설정이 완료되었습니다.</h3>
+                <p>설정한 내용을 확인했습니다. 명단 입력 후 배정을 시작할 수 있습니다.</p>
                 <button id="restart-button" type="button">다시 설정하기</button>
             </section>
           </section>
+
+
+             <!-- [새로운 기능] 짝 배정 결과 히스토리 및 목록 관리 -->
+        <section id="match-history-section" class="match-history-card">
+            <h2>무작위 짝 배정 및 결과 관리</h2>
+            <p>참여자 명단을 입력하여 실시간으로 짝을 배정하고, 결과를 저장하여 나중에 다시 확인할 수 있습니다.</p>
+            
+            <div class="match-input-group">
+                <label for="participant-input">참여자 명단 (쉼표 또는 공백으로 구분)</label>
+                <input type="text" id="participant-input" placeholder="예: 김철수, 이영희, 박지민, 홍길동">
+                <button id="run-matching-btn" type="button">무작위 짝 배정하기</button>
+            </div>
+            <p id="match-error-msg" class="error-message" aria-live="polite"></p>
+            
+            <!-- 배정 결과 영역 (기본 숨김) -->
+            <div id="match-result-container" hidden>
+                <h3>배정된 짝 결과</h3>
+                <ul id="match-result-list"></ul>
+                <button id="save-match-btn" type="button">현재 결과 저장하기</button>
+            </div>
+
+            <!-- 저장된 히스토리 목록 영역 -->
+            <div id="saved-history-container">
+                <h3>저장된 배정 결과 목록</h3>
+                <p id="empty-history-msg">저장된 결과가 없습니다.</p>
+                <ul id="history-list"></ul>
+            </div>
+        </section>
 
 
         <section id="subscribe" class="subscribe-card">
@@ -231,6 +259,8 @@
             </p>
         
         </section>
+
+     
     </main>
 
     <footer>

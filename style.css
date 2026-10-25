@@ -474,3 +474,98 @@ body.dark .training-flow {
     cursor: not-allowed;
 }
 
+/* ========================================== */
+/* [새로운 기능 스타일] 짝 배정 결과 히스토리 */
+/* ========================================== */
+.match-history-card {
+    padding: 24px;
+    margin-top: 32px;
+    background-color: #f4f3ff;
+    border: 1px solid #deddea;
+    border-radius: 12px;
+}
+
+.match-history-card h2 {
+    color: #635bff;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.match-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.match-history-card label {
+    font-weight: 700;
+    color: #292a31;
+}
+
+#match-result-container, 
+#saved-history-container {
+    margin-top: 20px;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #deddea;
+    border-radius: 8px;
+}
+
+#match-result-container[hidden] {
+    display: none;
+}
+
+#match-result-list, 
+#history-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 10px 0;
+}
+
+#match-result-list li, 
+#history-list li {
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: #f7f7fb;
+    border-radius: 6px;
+    border: 1px solid #deddea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-item-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: #635bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.history-item-btn:hover {
+    background-color: #4b43db;
+}
+
+/* 다크 테마 대응 */
+body.dark .match-history-card,
+body.dark #match-result-container,
+body.dark #saved-history-container {
+    background-color: #50515f;
+    border-color: #2d2e38;
+    color: #fff;
+}
+
+body.dark .match-history-card label {
+    color: #f4f4f8;
+}
+
+body.dark #match-result-list li,
+body.dark #history-list li {
+    background: #2d2e38;
+    border-color: #50515f;
+    color: #f4f4f8;
+}

@@ -2,12 +2,10 @@ const serviceName = "Random Match";
 let isSubscribed = false;
 let submitCount = 0;
 
-// 'b'를 추가하여 'makeSubscribeMessage'로 통일
 function makeSubscribeMessage(email, subscribed) {
     if (subscribed == true) {
         return email + "로 신청이 완료되었습니다.";
     }
-
     return "이메일을 입력한 뒤 신청해주세요.";
 }
 
@@ -22,8 +20,7 @@ function handleSubscribe(event) {
     const subscriberEmail = emailInput.value.trim();
 
     if (subscriberEmail === "") {
-        subscribeMessage.textContent =
-            "이메일을 입력한 뒤 신청해주세요.";
+        subscribeMessage.textContent = "이메일을 입력한 뒤 신청해주세요.";
         emailInput.focus();
         return;
     }
@@ -31,9 +28,7 @@ function handleSubscribe(event) {
     isSubscribed = true;
     submitCount += 1;
 
-    subscribeMessage.textContent =
-        makeSubscribeMessage(subscriberEmail, isSubscribed);
-
+    subscribeMessage.textContent = makeSubscribeMessage(subscriberEmail, isSubscribed);
     subscribeMessage.classList.add("is-success");
 
     subscribeButton.textContent = "신청 완료";
@@ -51,7 +46,6 @@ const startButton = document.querySelector("#startButton");
 
 function handleThemeClick() {
   const isDark = document.body.classList.toggle("dark");
-
   themeButton.textContent = isDark ? "라이트 테마로 바꾸기" : "다크 테마로 바꾸기";
 }
 
@@ -60,7 +54,6 @@ themeButton.addEventListener("click", handleThemeClick);
 function handleNicknameInput() {
   const maxLength = nicknameInput.maxLength;
   const currentLength = Math.min(nicknameInput.value.length, maxLength);
-
   nicknameCount.textContent = currentLength + " / " + maxLength;
 }
 
@@ -71,7 +64,7 @@ function handleAgreeChange() {
 
   startButton.disabled = !agreed;
   agreeMessage.textContent = agreed
-    ? "서비스 설정을 시작할 수 있습니다"
+    ? "배정 설정을 시작할 수 있습니다."
     : "동의 후 서비스 설정을 시작할 수 있습니다.";
 
   if (agreed) {
@@ -121,7 +114,7 @@ tabs.forEach(function (tab) {
 
 const trainingFlow = document.querySelector("#training-flow");
 const flowSteps = trainingFlow.querySelectorAll(".step");
-const progressItems = trainingFlow.querySelectorAll(".progress__item");
+const progressItems = trainingFlow.querySelectorAll(".progress_item");
 const titleInput = document.querySelector("#presentation-title");
 const titleError = document.querySelector("#title-error");
 const titleNext = document.querySelector("#title-next");
@@ -137,13 +130,13 @@ const restartButton = document.querySelector("#restart-button");
 const summaryTitle = document.querySelector("#summary-title");
 const summaryDuration = document.querySelector("#summary-duration");
 const summaryQna = document.querySelector("#summary-qna");
-const durationValues = ["3", "5", "10"];
+const durationValues = ["2명", "4명", "6명"];
 
 const formData = {
   title: "", 
-  duration: "5", 
+  duration: "4명", 
   qna: false, 
-  qnaCount: "2"
+  qnaCount: "2명 추가"
 };
 
 function showStep(index) {
@@ -188,7 +181,7 @@ recordingConfirm.addEventListener("click", () => {
 function validateTitle() {
     const value = titleInput.value.trim();
     if (!value) {
-        titleError.textContent = "발표 제목을 입력해 주세요.";
+        titleError.textContent = "모임 이름을 입력해 주세요.";
         titleInput.classList.add("has-error");
         titleInput.focus();
         return false;
@@ -205,7 +198,7 @@ titleNext.addEventListener("click", () => {
 });
 
 durationRange.addEventListener("input", () => {
-    durationValue.value = durationValues[durationRange.value] + "분";
+    durationValue.value = durationValues[durationRange.value];
 });
 
 qnaOption.addEventListener("change", () => {
@@ -217,10 +210,11 @@ optionNext.addEventListener("click", () => {
     formData.duration = durationValues[durationRange.value];
     formData.qna = qnaOption.checked;
     const count = document.querySelector('input[name="qna-count"]:checked');
-    formData.qnaCount = count.value;
+    formData.qnaCount = count ? count.value + "명 추가" : "2명 추가";
+    
     summaryTitle.textContent = formData.title;
-    summaryDuration.textContent = formData.duration + "분";
-    summaryQna.textContent = formData.qna ? formData.qnaCount + "개 포함" : "미포함";
+    summaryDuration.textContent = formData.duration;
+    summaryQna.textContent = formData.qna ? formData.qnaCount : "미적용";
     showStep(2);
 });
 
@@ -228,14 +222,14 @@ summaryPrev.addEventListener("click", () => showStep(1));
 finishButton.addEventListener("click", () => showStep(3));
 restartButton.addEventListener("click", () => {
     formData.title = "";
-    formData.duration = "5";
+    formData.duration = "4명";
     formData.qna = false;
-    formData.qnaCount = "2";
+    formData.qnaCount = "2명 추가";
     titleInput.value = "";
     titleError.textContent = "";
     titleInput.classList.remove("has-error");
     durationRange.value = "1";
-    durationValue.value = "5분";
+    durationValue.value = "4명";
     qnaOption.checked = false;
     qnaOptions.hidden = true;
     document.querySelector('input[name="qna-count"][value="2"]').checked = true;
