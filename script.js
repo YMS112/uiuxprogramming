@@ -240,9 +240,7 @@ restartButton.addEventListener("click", () => {
     showStep(0);
 });
 
-// ==========================================
-// [새로운 기능] 무작위 짝 배정 및 히스토리 관리 로직
-// ==========================================
+// 무작위 짝 배정 및 히스토리 관리 로직
 const participantInput = document.querySelector("#participant-input");
 const runMatchingBtn = document.querySelector("#run-matching-btn");
 const matchErrorMsg = document.querySelector("#match-error-msg");
@@ -269,6 +267,7 @@ runMatchingBtn.addEventListener("click", () => {
     const rawText = participantInput.value.trim();
     if (!rawText) {
         matchErrorMsg.textContent = "참여자 명단을 입력해 주세요. (예: 김철수, 이영희)";
+        matchErrorMsg.style.color = "#9d243d";
         participantInput.classList.add("has-error");
         participantInput.focus();
         matchResultContainer.hidden = true;
@@ -278,10 +277,11 @@ runMatchingBtn.addEventListener("click", () => {
     matchErrorMsg.textContent = "";
     participantInput.classList.remove("has-error");
 
-    let names = rawText.split(/[,,\s]+/).map(name => name.trim()).filter(name => name.length > 0);
+    let names = rawText.split(/[,\s]+/).map(name => name.trim()).filter(name => name.length > 0);
     
     if (names.length < 2) {
         matchErrorMsg.textContent = "최소 2명 이상의 참여자를 입력해야 짝을 배정할 수 있습니다.";
+        matchErrorMsg.style.color = "#9d243d";
         participantInput.focus();
         matchResultContainer.hidden = true;
         return;
@@ -371,3 +371,213 @@ function renderHistoryList() {
         historyList.appendChild(li);
     });
 }
+
+// 새로운 매칭 프로젝트 등록, 목록 출력, 수정 및 삭제 기능 통합 로직
+document.addEventListener("DOMContentLoaded", () => {
+    const projectForm = document.querySelector("#match-project-form");
+    const projTitleInput = document.querySelector("#proj-title");
+    const projTitleError = document.querySelector("#proj-title-error");
+    const charCounter = document.querySelector("#char-counter");
+    const validationStatus = document.querySelector("#validation-status");
+    
+    const exceptionToggle = document.querySelector("#exception-toggle");
+    const conditionalBox = document.querySelector("#conditional-box");
+    const exceptionRules = document.querySelector("#exception-rules");
+
+    const submitBtn = document.querySelector("#submit-project-btn");
+    const submitProgressMsg = document.querySelector("#submit-progress-msg");
+    
+    const projectList = document.querySelector("#project-list");
+    const emptyProjectMsg = document.querySelector("#empty-project-msg");
+
+    let editingId = null; // 현재 수정 중인 프로젝트의 ID (null이면 신규 등록 모드)
+
+    function validateFormState() {
+        const titleVal = projTitleInput.value.trim();
+        let isValid = true;
+        let errorMessage = "";
+
+        charCounter.textContent = `제목 글자 수: ${titleVal.length} / 30`;
+
+        if (titleVal.length === 0) {
+            isValid = false;
+            errorMessage = "프로젝트 명은 필수 입력 항목입니다.";
+        } else if (titleVal.length < 3) {
+            isValid = false;
+            errorMessage = "프로젝트 명은 최소 3자 이상 입력해야 합니다.";
+        }
+
+        if (!isValid) {
+            projTitleError.textContent = errorMessage;
+            projTitleInput.classList.add("has-error");
+            validationStatus.textContent = "❌ 필수 조건 미충족";
+            validationStatus.className = "status-invalid";
+        } else {
+            projTitleError.textContent = "";
+            projTitleInput.classList.remove("has-error");
+            validationStatus.textContent = "✔ 제출 가능 상태";
+            validationStatus.className = "status-valid";
+        }
+
+        return isValid;
+    }
+
+    projTitleInput.addEventListener("input", validateFormState);
+
+    exceptionToggle.addEventListener("change", (e) => {
+        if (e.target.checked) {
+            conditionalBox.hidden = false;
+            exceptionRules.disabled = false;
+            exceptionRules.focus();
+        } else {
+            conditionalBox.hidden = true;
+            exceptionRules.disabled = true;
+            exceptionRules.value = "";
+        }
+    });
+
+    // 화면에 저장된 프로젝트 목록을 렌더링하는 함수
+    function renderProjectList() {
+        const savedProjects = JSON.parse(localStorage.getItem("matchProjects") || "[]");
+        
+        if (savedProjects.length === 0) {
+            emptyProjectMsg.hidden = false;
+            projectList.innerHTML = "";
+            return;
+        }
+
+        emptyProjectMsg.hidden = true;
+        projectList.innerHTML = "";
+
+        savedProjects.forEach((proj) => {
+            const li = document.createElement("li");
+
+            const infoDiv = document.createElement("div");
+            infoDiv.innerHTML = `<strong>${proj.title}</strong><br><small style="color: #666;">방식: ${proj.matchType === 'pair' ? '2인 1조' : '다인원 조'} ${proj.hasException && proj.exceptionRules ? `| 제외조건: ${proj.exceptionRules}` : ''}</small>`;
+
+            const btnGroup = document.createElement("div");
+            btnGroup.className = "project-btn-group";
+
+            // 수정 버튼 기능
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "수정";
+            editBtn.className = "project-action-btn";
+            editBtn.addEventListener("click", () => {
+                projTitleInput.value = proj.title;
+                document.querySelector(`input[name="matchType"][value="${proj.matchType}"]`).checked = true;
+                exceptionToggle.checked = proj.hasException;
+                if (proj.hasException) {
+                    conditionalBox.hidden = false;
+                    exceptionRules.disabled = false;
+                    exceptionRules.value = proj.exceptionRules;
+                } else {
+                    conditionalBox.hidden = true;
+                    exceptionRules.disabled = true;
+                    exceptionRules.value = "";
+                }
+                editingId = proj.id; // 수정 모드로 전환
+                submitBtn.textContent = "프로젝트 수정 완료하기";
+                validateFormState();
+                projTitleInput.focus();
+                projectForm.scrollIntoView({ behavior: "smooth" });
+            });
+
+            // 삭제 버튼 기능
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "삭제";
+            deleteBtn.className = "project-action-btn project-delete-btn";
+            deleteBtn.addEventListener("click", () => {
+                let projects = JSON.parse(localStorage.getItem("matchProjects") || "[]");
+                projects = projects.filter(p => p.id !== proj.id);
+                localStorage.setItem("matchProjects", JSON.stringify(projects));
+                
+                // 만약 현재 수정 중이던 항목을 삭제했다면 수정 모드 해제
+                if (editingId === proj.id) {
+                    editingId = null;
+                    submitBtn.textContent = "프로젝트 등록 및 저장하기";
+                    projectForm.reset();
+                    conditionalBox.hidden = true;
+                    exceptionRules.disabled = true;
+                    validateFormState();
+                }
+                renderProjectList();
+            });
+
+            btnGroup.appendChild(editBtn);
+            btnGroup.appendChild(deleteBtn);
+
+            li.appendChild(infoDiv);
+            li.appendChild(btnGroup);
+            projectList.appendChild(li);
+        });
+    }
+
+    // 폼 제출(등록 또는 수정 완료) 이벤트 처리
+    projectForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        if (!validateFormState()) {
+            alert("입력 조건이 충족되지 않았습니다. 오류 내용을 확인해주세요.");
+            projTitleInput.focus();
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitProgressMsg.hidden = false;
+        submitProgressMsg.textContent = editingId ? "⏳ 프로젝트를 수정하는 중입니다..." : "⏳ 프로젝트 설정을 안전하게 저장하는 중입니다...";
+
+        setTimeout(() => {
+            try {
+                let savedProjects = JSON.parse(localStorage.getItem("matchProjects") || "[]");
+
+                if (editingId !== null) {
+                    // 기존 프로젝트 내용 수정
+                    savedProjects = savedProjects.map(p => {
+                        if (p.id === editingId) {
+                            return {
+                                ...p,
+                                title: projTitleInput.value.trim(),
+                                matchType: document.querySelector('input[name="matchType"]:checked').value,
+                                hasException: exceptionToggle.checked,
+                                exceptionRules: exceptionRules.disabled ? "" : exceptionRules.value.trim()
+                            };
+                        }
+                        return p;
+                    });
+                    submitProgressMsg.textContent = "🎉 프로젝트가 성공적으로 수정되었습니다!";
+                    editingId = null;
+                    submitBtn.textContent = "프로젝트 등록 및 저장하기";
+                } else {
+                    // 신규 프로젝트 등록
+                    const formDataObj = {
+                        id: Date.now(),
+                        title: projTitleInput.value.trim(),
+                        matchType: document.querySelector('input[name="matchType"]:checked').value,
+                        hasException: exceptionToggle.checked,
+                        exceptionRules: exceptionRules.disabled ? "" : exceptionRules.value.trim()
+                    };
+                    savedProjects.push(formDataObj);
+                    submitProgressMsg.textContent = "🎉 프로젝트 등록이 성공적으로 완료되었습니다!";
+                }
+
+                localStorage.setItem("matchProjects", JSON.stringify(savedProjects));
+                submitProgressMsg.style.color = "#245c3a";
+
+                projectForm.reset();
+                conditionalBox.hidden = true;
+                exceptionRules.disabled = true;
+                validateFormState();
+                renderProjectList();
+
+            } catch (err) {
+                submitProgressMsg.textContent = "⚠️ 저장 중 오류가 발생했습니다. 다시 시도해주세요.";
+                submitProgressMsg.style.color = "#9d243d";
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }, 1200);
+    });
+
+    // 페이지 로드 시 기존에 저장된 목록 화면에 출력
+    renderProjectList();
+});

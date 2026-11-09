@@ -10,7 +10,6 @@ body {
 header,
 main,
 footer {
-
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
@@ -83,10 +82,8 @@ p {
   list-style-type: none;
   padding-left: 0;
   margin: 0;
-
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  
   gap: 24px;
 }
 
@@ -113,10 +110,16 @@ p {
   border-radius: 12px;
 }
 
-form {
+#subscribe-form {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+#match-project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 input {
@@ -209,7 +212,9 @@ body.dark nav a{
 
 body.dark .feature-card,
 body.dark .event-card,
-body.dark .subscribe-card{
+body.dark .subscribe-card,
+body.dark .match-project-card,
+body.dark .saved-projects-container{
   background-color: #50515f;
   border-color: #2d2e38;
 }
@@ -368,8 +373,182 @@ body.dark .training-flow {
   border-color: #2d2e38;
 }
 
+/* 새로운 프로젝트 등록 폼 및 목록 스타일 */
+.match-project-card {
+    padding: 24px;
+    margin-top: 32px;
+    background-color: #ffffff;
+    border: 1px solid #deddea;
+    border-radius: 12px;
+}
 
-/* 웹페이지가 표시되는 가로 폭이 768px 이하일 때만 적용 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label, .form-group legend {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #292a31;
+}
+
+body.dark .form-group label, 
+body.dark .form-group legend {
+    color: #f4f4f8;
+}
+
+.required {
+    color: #9d243d;
+}
+
+.help-text {
+    display: block;
+    margin-top: 4px;
+    font-size: 14px;
+    color: #71727a;
+}
+
+body.dark .help-text {
+    color: #d8b8e2;
+}
+
+.error-msg {
+    margin-top: 4px;
+    font-size: 14px;
+    color: #9d243d;
+    font-weight: 700;
+}
+
+.radio-group {
+    display: flex;
+    gap: 16px;
+}
+
+.conditional-box {
+    margin-top: 12px;
+    padding: 16px;
+    background-color: #f7f7fb;
+    border: 1px dashed #b8b7c5;
+    border-radius: 8px;
+}
+
+body.dark .conditional-box {
+    background-color: #2d2e38;
+    border-color: #50515f;
+}
+
+.conditional-box textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #b8b7c5;
+    border-radius: 8px;
+    font: inherit;
+}
+
+body.dark .conditional-box textarea {
+    background-color: #50515f;
+    color: #fff;
+    border-color: #2d2e38;
+}
+
+.status-indicator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px 0;
+    padding: 10px 14px;
+    background-color: #ecebf2;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #292a31;
+}
+
+body.dark .status-indicator {
+    background-color: #2d2e38;
+    color: #f4f4f8;
+}
+
+.status-invalid {
+    color: #9d243d;
+    font-weight: 700;
+}
+
+.status-valid {
+    color: #245c3a;
+    font-weight: 700;
+}
+
+.progress-msg {
+    margin-top: 10px;
+    font-weight: 700;
+    color: #635bff;
+}
+
+/* 등록된 프로젝트 목록 컨테이너 */
+.saved-projects-container {
+    margin-top: 24px;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #deddea;
+    border-radius: 8px;
+}
+
+body.dark .saved-projects-container {
+    background-color: #50515f;
+    border-color: #2d2e38;
+}
+
+#project-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 10px 0;
+}
+
+#project-list li {
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #f7f7fb;
+    border-radius: 6px;
+    border: 1px solid #deddea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+body.dark #project-list li {
+    background: #2d2e38;
+    border-color: #50515f;
+    color: #f4f4f8;
+}
+
+.project-btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.project-action-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: #635bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.project-action-btn:hover {
+    background-color: #4b43db;
+}
+
+.project-delete-btn {
+    background-color: #9d243d;
+}
+
+.project-delete-btn:hover {
+    background-color: #7d1a2f;
+}
+
 @media (max-width: 768px){
   body{
     font-size: 16px;
@@ -392,7 +571,6 @@ body.dark .training-flow {
     font-size: 28px;
   }
 
-  /* 가로 메뉴를 위에서 아래로 배치*/
   nav{
     flex-direction: column;
     align-items: stretch;
@@ -400,17 +578,14 @@ body.dark .training-flow {
   }
 
   nav a{
-    /* 링크 글자 주변에도 누를 수 있는 여백 추가 */
     padding: 8px 0;
   }
 
-  /* 기능 카드를 한 열로 배치*/
   .feature-list{
     grid-template-columns: 1fr;
   }
 
-  /* 이메일 입력창과 버튼도 한 열로 배치*/
-  form{
+  #subscribe-form {
     flex-direction: column;
     align-items: stretch;
   }
@@ -474,9 +649,6 @@ body.dark .training-flow {
     cursor: not-allowed;
 }
 
-/* ========================================== */
-/* [새로운 기능 스타일] 짝 배정 결과 히스토리 */
-/* ========================================== */
 .match-history-card {
     padding: 24px;
     margin-top: 32px;
@@ -550,7 +722,6 @@ body.dark .training-flow {
     background-color: #4b43db;
 }
 
-/* 다크 테마 대응 */
 body.dark .match-history-card,
 body.dark #match-result-container,
 body.dark #saved-history-container {
